@@ -8,8 +8,6 @@ import (
 )
 
 func main() {
-	listenString := ":8080"
-
 	viper.SetEnvPrefix("request")
 	viper.SetDefault("method", "POST")
 	viper.SetDefault("body", "")
@@ -40,4 +38,5 @@ func main() {
 		fmt.Printf("error: %v\n", err)
 		return
 	}
+	fmt.Printf("response: [%v]\n", resp)
 }
