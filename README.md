@@ -34,6 +34,8 @@ module "siderite_backend" {
   source  = "philips-labs/siderite-backend/cloudfoundry"
   version = "0.8.0"
   
+  enable_gateway = false
+  
   cf_region   = "us-east"
   cf_org_name = var.cf_org
   cf_space    = var.cf_space
@@ -51,6 +53,8 @@ resource "hsdp_function" "request" {
     REQUEST_USERNAME = "r0n"
     REQUEST_PASSWORD = "SwaNs0n"
   }
+ 
+  run_every = "20m"
  
   backend {
     credentials = module.siderite_backend.credentials
