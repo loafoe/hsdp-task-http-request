@@ -36,7 +36,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: philipslabs/hsdp-task-http-request:latest
+          tags: loafoe/hsdp-task-http-request:latest
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
