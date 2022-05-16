@@ -71,7 +71,21 @@ resource "hsdp_function" "request" {
  | REQUEST_USERNAME   | Username to use for Basic Auth                                                              |                          |
  | REQUEST_PASSWORD   | Password to use for Basic Auth                                                              |                          |
  | REQUEST_BODY       | The request Body to use.                                                                    |                          |
- | REQUEST_HEADER_XXX | The request header to use. Where XXX is the header name. Underscores are replaced by dashes |                          |
+ | REQUEST_HEADER_XXX | The request header to use. Where XXX is the header name. Underscores are replaced by dashes |                          | 
+
+## IAM Service Identity support
+
+The task supports injecting an IAM access token based on Service credentials, if all of the below
+environment variables are available:
+
+| Name                         | Description                                    |
+|------------------------------|------------------------------------------------|
+| HSDP_REGION                  | The HSDP IAM Region                            |
+| HSDP_ENVIRONMENT             | The HSDP IAM Environment                       |
+| HSDP_IAM_SERVICE_ID          | The IAM service identity ID                    |
+| HSDP_IAM_SERVICE_PRIVATE_KEY | The private key associated with the service ID |
+
+The token will be added in the `Authorization` header
 
 ## License
 
