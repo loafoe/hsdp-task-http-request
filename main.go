@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/go-resty/resty/v2"
+	"github.com/philips-software/go-hsdp-api/iam"
 	"github.com/spf13/viper"
 )
 
@@ -38,6 +39,7 @@ func main() {
 		headerValue := parts[1]
 		r = r.SetHeader(canonicalHeader, headerValue)
 	}
+	r = detectAndUseServiceIdentity(r)
 
 	body := viper.GetString("body")
 	if body != "" {
@@ -53,4 +55,38 @@ func main() {
 		return
 	}
 	fmt.Printf("response: [%v]\n", resp)
+}
+
+func detectAndUseServiceIdentity(req *resty.Request) *resty.Request {
+	serviceID := os.Getenv("HSDP_IAM_SERVICE_ID")
+	privateKey := os.Getenv("HSDP_IAM_SERVICE_PRIVATE_KEY")
+	region := os.Getenv("HSDP_REGION")
+	environment := os.Getenv("HSDP_ENVIRONMENT")
+	if serviceID == "" || privateKey == "" || region == "" || environment == "" {
+		return req
+	}
+	fmt.Printf("iam: found service credentials, using them to generate accessToken\n")
+	client, err := iam.NewClient(nil, &iam.Config{
+		Region:      region,
+		Environment: environment,
+	})
+	if err != nil {
+		fmt.Printf("iam: error creating client: %v\n", err)
+		return req
+	}
+	err = client.ServiceLogin(iam.Service{
+		ServiceID:  serviceID,
+		PrivateKey: privateKey,
+	})
+	if err != nil {
+		fmt.Printf("iam: error logging in: %v\n", err)
+		return req
+	}
+	token, err := client.Token()
+	if err != nil {
+		fmt.Printf("iam: error getting token: %v\n", err)
+		return req
+	}
+	req.SetHeader("Authorization", "Bearer "+token)
+	return req
 }
