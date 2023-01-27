@@ -4,6 +4,6 @@ go 1.16
 
 require (
 	github.com/go-resty/resty/v2 v2.7.0
-	github.com/philips-software/go-hsdp-api v0.76.1
+	github.com/philips-software/go-hsdp-api v0.77.4
 	github.com/spf13/viper v1.14.0
 )
